@@ -1,5 +1,8 @@
-GNU GENERAL PUBLIC LICENSE
-Version 3, 29 June 2007
+GNU AFFERO GENERAL PUBLIC LICENSE
+Version 3, 19 November 2007
+
+Copyright © 2007 Free Software Foundation, Inc. <https://fsf.org/>
+Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
 
 This is a simple bot for discord <delibot>
 Copyright (C) 2024 Pedro 'dopeldev' Gonzales 
