@@ -1,5 +1,5 @@
-                    GNU GENERAL PUBLIC LICENSE
-                       Version 3, 29 June 2007
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
 
 This is a simple bot for discord <delibot>
 Copyright (C) 2024 Pedro 'dopeldev' Gonzales 
