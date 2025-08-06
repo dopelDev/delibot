@@ -16,5 +16,5 @@ Minimo posible para connect with a simple test bot response
 **Debian Requirements**
 
 ```bash
-    sudo apt install libffi-dev libnacl-dev python3-dev
+sudo apt install libffi-dev libnacl-dev python3-dev
 ```
