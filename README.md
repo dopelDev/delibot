@@ -18,3 +18,5 @@ Minimo posible para connect with a simple test bot response
 ```bash
 sudo apt install libffi-dev libnacl-dev python3-dev
 ```
+
+### Usage:

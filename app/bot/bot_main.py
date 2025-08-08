@@ -34,10 +34,11 @@ def create_bot():
 
     TOKEN = os.getenv('DISCORD_TOKEN')
     GUILD_ID = os.getenv('DISCORD_GUILD_ID')
-    PREFIX = os.getenv('PREFIX')
+    PREFIX = os.getenv('PREFIX', "!")
 
     intents = discord.Intents.default()
     intents.message_content = True
+    intents.members = True
     bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
     @bot.event
@@ -55,6 +56,7 @@ async def setup_extensions(bot):
     Add extensions and basic_commands
     """
     await bot.load_extension('app.bot.commands.basic_commands')
+    print("✅ basic_commands extension loaded")
 
 
 def run_bot():
@@ -70,6 +72,7 @@ def run_bot():
 
     async def runner():
         await setup_extensions(bot)
+        print(f"Loaded commands: {[cmd.name for cmd in bot.commands]}")
         await bot.start(TOKEN)
     asyncio.run(runner())
 
