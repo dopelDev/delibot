@@ -1,35 +1,28 @@
-# pyproject.toml
-[build-system]
-requires = ["setuptools>=75", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "delibot"
 version = "0.1.0"
 description = "Discord bot"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13.5"
+authors = [
+  { name = "Pedro 'Dopeldev' Gonzales" },
+  { email = "dopel@dopeldev.com" },
+]
 dependencies = [
   "discord.py>=2.4",
   "python-dotenv>=1.0",
 ]
 
 [project.scripts]
-delibot = "app.main:main"  # ahora puedes ejecutar: `delibot`
+# Ejecuta con: delibot
+delibot = "app.main:main"
+
+# pyproject.toml
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-# Detecta paquetes bajo el repo (usa __init__.py)
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*"]
-
-# --- Config de Pylint en pyproject (Pylint ≥3) ---
-[tool.pylint.main]
-# Truco por si aún no instalas editable: añade el cwd al sys.path
-# (Igual recomiendo MUCHO hacer `pip install -e .`)
-init-hook = "import sys, pathlib; sys.path.insert(0, str(pathlib.Path().resolve()))"
-
-[tool.pylint.'MESSAGES CONTROL']
-# Desactiva mensajes verbosos comunes (opcional)
-disable = "C0114,C0115,C0116"
-
