@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-delibot = "app.bot.bot_main:run_bot"  # ahora puedes ejecutar: `delibot`
+delibot = "app.main:main"  # ahora puedes ejecutar: `delibot`
 
 [tool.setuptools]
 # Detecta paquetes bajo el repo (usa __init__.py)
