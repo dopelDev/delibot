@@ -1,4 +1,5 @@
-# bot_main.py
+# app/bot/bot_main.py
+from __future__ import annotations
 
 import os
 import sys
@@ -6,74 +7,76 @@ import asyncio
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from app.utils.path import get_project_root
+
+# ROOT_PATH global y logger central
+from app.utils.logger import ROOT_PATH, get_logger
+# Cargar variables de entorno temprano (idempotente; no pisa env existentes)
+load_dotenv(dotenv_path=ROOT_PATH / "discord.env", override=False)
+
+LOG = get_logger(__name__)
 
 
-def create_bot():
+def create_bot() -> tuple[commands.Bot, str]:
     """
     Creates and configures the Discord bot instance.
 
-    Loads environment variables from the project root (using a marker file),
-    sets up Discord intents, creates the bot with
-    the configured command prefix, and attaches
-    the on_ready event for basic logging when the bot connects.
+    Loads environment variables from <ROOT_PATH>/discord.env,
+    sets up Discord intents, creates the bot with the configured command prefix,
+    and attaches basic startup hooks.
 
     Returns:
-        tuple: (bot, TOKEN)
-            bot (commands.Bot): The initialized Discord bot instance.
-            TOKEN (str): The Discord bot token loaded from environment
-                         variables.
+        (bot, TOKEN)
     """
+    # ⚠️ Mejor ejecutar como paquete: `python -m app.bot.bot_main`
+    # y evitar sys.path hacks; si necesitas mantenerlo, déjalo.
+    if str(ROOT_PATH) not in sys.path:
+        sys.path.insert(0, str(ROOT_PATH))
 
-    ROOT_DIR = get_project_root()
-    sys.path.insert(0, str(ROOT_DIR))
-
-    # import Environment Values
-    ENV_PATH = ROOT_DIR / 'discord.env'
-    load_dotenv(dotenv_path=ENV_PATH)
-
-    TOKEN = os.getenv('DISCORD_TOKEN')
-    GUILD_ID = os.getenv('DISCORD_GUILD_ID')
-    PREFIX = os.getenv('PREFIX', "!")
+    TOKEN = os.getenv("DISCORD_TOKEN")
+    GUILD_ID = os.getenv("DISCORD_GUILD_ID")
+    PREFIX = os.getenv("PREFIX", "!")
 
     intents = discord.Intents.default()
     intents.message_content = True
     intents.members = True
+
     bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
     @bot.event
     async def on_ready():
-        print(f'Connected as {bot.user}')
+        LOG.info("Connected as %s", bot.user)
         if GUILD_ID:
             guild = bot.get_guild(int(GUILD_ID))
-            print(f'Connected in server : {guild.name} (ID: {guild.id})')
+            if guild:
+                LOG.info("Connected in server: %s (ID: %s)",
+                         guild.name, guild.id)
+
+    # Cargar extensiones en setup_hook (patrón recomendado en discord.py 2.x)
+    @bot.event
+    async def setup_hook() -> None:
+        await bot.load_extension("app.bot.commands.basic_commands")
+        LOG.info("✅ basic_commands extension loaded")
+        LOG.debug("Loaded commands: %s", [cmd.name for cmd in bot.commands])
 
     return bot, TOKEN
 
 
-async def setup_extensions(bot):
-    """
-    Add extensions and basic_commands
-    """
-    await bot.load_extension('app.bot.commands.basic_commands')
-    print("✅ basic_commands extension loaded")
-
-
-def run_bot():
-    """
-    Entry point to start the Discord bot.
-
-    This function creates the bot instance, loads all extensions, and runs the
-    bot asynchronously using the loaded token. It is intended to be called
-    either directly when running this module as the main program,
-    or imported and called from another script.
-    """
-    bot, TOKEN = create_bot()
+def run_bot() -> None:
+    """Entry point to start the Discord bot."""
+    bot, token = create_bot()
+    if not token:
+        LOG.error("DISCORD_TOKEN no está definido en el entorno/discord.env")
+        raise SystemExit(1)
 
     async def runner():
-        await setup_extensions(bot)
-        print(f"Loaded commands: {[cmd.name for cmd in bot.commands]}")
-        await bot.start(TOKEN)
+        try:
+            await bot.start(token)
+        finally:
+            # Cierre limpio si falla start() o se cancela
+            if bot.is_closed():
+                return
+            await bot.close()
+
     asyncio.run(runner())
 
 
