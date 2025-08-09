@@ -14,6 +14,9 @@ tasks in the future.
 """
 
 from app.bot.bot_main import run_bot
+from app.utils.logger import get_logger
+
+LOG = get_logger(__name__)
 
 
 def main():
@@ -22,8 +25,7 @@ def main():
 
     Calls the run_bot() function to initialize and start the bot.
     """
-    msg = "Starting Delibot..."
-    print(msg)
+    LOG.info("Starting Delibot...")
     run_bot()
 
 
