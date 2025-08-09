@@ -103,7 +103,7 @@ def create_bot() -> tuple[commands.Bot, str]:
     async def on_ready() -> None:
         LOG.info("Connected as %s", bot.user)
 
-        gid = getattr(bot, "guild_id", None)
+        gid = guild_id
         if not gid:
             # No hay GUILD_ID configurado; nada más que hacer.
             return
