@@ -109,6 +109,13 @@ def create_bot() -> tuple[commands.Bot, str]:
             return
 
         guild = await _resolve_guild(bot, gid)
+        # Diagnóstico: en qué canales de texto puedo leer/enviar
+        for ch in guild.text_channels:
+            perms = ch.permissions_for(guild.me)
+            LOG.info(
+                "[%s] view=%s, read_history=%s, send=%s",
+                ch.name, perms.view_channel, perms.read_message_history, perms.send_messages
+            )
         if guild:
             LOG.info("Connected in server: %s (ID: %s)", guild.name, guild.id)
             return
