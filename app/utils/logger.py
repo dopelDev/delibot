@@ -22,7 +22,11 @@ from app.utils.path import get_project_root
 # ---- Globals ---------------------------------------------------------------
 
 # Project root (single source of truth)
-ROOT_PATH: Path = get_project_root()
+try:
+    ROOT_PATH: Path = get_project_root()
+except FileNotFoundError:
+    ROOT_PATH: Path = Path.cwd()
+
 # Logs directory fixed under root
 LOGS_DIR: Path = (ROOT_PATH / "logs").resolve()
 

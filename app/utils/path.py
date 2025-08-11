@@ -8,6 +8,18 @@ upward from the current file's directory until it finds a given marker file.
 By default, it uses `requirements.txt` as the marker, but you can override it.
 It also exports a `ROOT_PATH` constant so you don't have to call the function
 manually every time.
+
+Usage:
+    from pathlib import Path
+    from app.utils.path import get_project_root
+
+    try:
+        root = get_project_root()
+    except FileNotFoundError:
+        # If not found, fallback to current working directory
+        root = Path.cwd()
+
+    print(f"Project root: {root}")
 """
 
 from __future__ import annotations
