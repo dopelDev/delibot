@@ -1,8 +1,8 @@
 # .gitignore
 discord.env
-venv/*
-__pycache__/*
+venv/
+__pycache__/
 *.pyc
-.pytest_cache/*
-logs/*
-delibot.egg-info/*
+.pytest_cache/
+logs/
+delibot.egg-info/
